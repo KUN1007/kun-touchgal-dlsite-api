@@ -20,3 +20,5 @@ export interface DlsiteEditionLinks {
 }
 
 export type DlsiteLocale = 'zh_CN' | 'ja_JP' | 'en_US'
+
+export type DlsiteSite = 'maniax' | 'ai' | 'aix' | 'pro'

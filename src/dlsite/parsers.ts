@@ -5,14 +5,16 @@ const getText = (element?: Element | null) =>
   element?.textContent?.replace(/\s+/g, ' ').trim() ?? ''
 
 const RELEASE_LABEL_PATTERN =
-  /販売日|発売日|贩卖日|贩售日|发售日|公開日|公開開始日|release/i
+  /販売日|発売日|贩卖日|贩售日|发售日|公開日|公開開始日|頒布日|Reg\. Date|release/i
 
-const MAKER_LABEL_PATTERN = /Circle|サークル|社团|社團|メーカー|社名/i
+const MAKER_LABEL_PATTERN = /Circle|サークル|社团|社團|メーカー|社名|品牌/i
 
 const DATE_PATTERN = /(\d{4})[^\d]?(\d{1,2})[^\d]?(\d{1,2})/
 
 const matchDate = (text: string): string | undefined => {
-  const clean = text.replace(/[年月日]/g, ' ').replace(/[./]/g, '-')
+  const clean = text
+    .replace(/[年月日]/g, ' ')
+    .replace(/[./]/g, '-')
   const match = clean.match(DATE_PATTERN)
   if (!match) return undefined
 

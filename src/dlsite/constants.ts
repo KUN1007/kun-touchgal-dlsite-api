@@ -1,4 +1,11 @@
-export const DLSITE_BASE_URL = 'https://www.dlsite.com/maniax/work/=/product_id'
+import type { DlsiteSite } from './types'
+
+export const DLSITE_PRODUCT_BASE: Record<DlsiteSite, string> = {
+  maniax: 'https://www.dlsite.com/maniax/work/=/product_id',
+  ai: 'https://www.dlsite.com/ai/work/=/product_id',
+  aix: 'https://www.dlsite.com/aix/work/=/product_id',
+  pro: 'https://www.dlsite.com/pro/work/=/product_id'
+}
 
 export const DLSITE_HOST = 'https://www.dlsite.com'
 

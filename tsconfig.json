@@ -5,6 +5,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "useDefineForClassFields": true,
+    "types": ["node"],
 
     /* modules */
     "module": "ESNext",

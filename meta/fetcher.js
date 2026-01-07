@@ -1,7 +1,13 @@
 import { writeFileSync } from 'fs'
 
+// RJ: https://www.dlsite.com/maniax/work/=/product_id/RJxxxxxxxx.html
+// VJ: https://www.dlsite.com/pro/work/=/product_id/VJxxxxxxxx.html
+
+// AI: https://www.dlsite.com/ai/work/=/product_id/RJ01341035.html
+// AIx: https://www.dlsite.com/aix/work/=/product_id/RJ01341035.html
+
 const html = await fetchPage(
-  'https://www.dlsite.com/ai/work/=/product_id/RJ01341035.html/?locale=zh_CN'
+  'https://www.dlsite.com/maniax/work/=/product_id/RJ01341035.html/?locale=zh_CN'
 )
 
 if (html) {
