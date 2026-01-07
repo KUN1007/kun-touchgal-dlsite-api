@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "preview": "node dist/index.js",
     "test": "vitest run",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "start": "pm2 start ecosystem.config.cjs",
+    "stop": "pm2 delete kun-touchgal-dlsite-api",
+    "deploy:build": "esno scripts/deployBuild.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
