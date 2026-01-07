@@ -9,7 +9,7 @@ pnpm install
 pnpm dev
 ```
 
-The dev server listens on `http://localhost:8787`. Available routes:
+The dev server listens on `http://127.0.0.1:8787`. Available routes:
 
 | Method | Path            | Description                               |
 | ------ | --------------- | ----------------------------------------- |

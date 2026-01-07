@@ -8,6 +8,11 @@ class MockResponse implements Response {
   readonly statusText: string
   readonly ok: boolean
   readonly url: string
+  readonly headers = new Headers()
+  readonly redirected = false
+  readonly type: ResponseType = 'basic'
+  readonly body: ReadableStream<Uint8Array<ArrayBuffer>> | null = null
+  readonly bodyUsed = true
   #body: string
 
   constructor(body: string, url: string, status = 200, statusText = 'OK') {
@@ -27,11 +32,18 @@ class MockResponse implements Response {
   }
 
   async arrayBuffer(): Promise<ArrayBuffer> {
-    return new TextEncoder().encode(this.#body).buffer
+    const encoded = new TextEncoder().encode(this.#body)
+    const buffer = new ArrayBuffer(encoded.byteLength)
+    new Uint8Array(buffer).set(encoded)
+    return buffer
   }
 
   async blob(): Promise<Blob> {
     throw new Error('Not implemented')
+  }
+
+  async bytes(): Promise<Uint8Array<ArrayBuffer>> {
+    return new TextEncoder().encode(this.#body) as Uint8Array<ArrayBuffer>
   }
 
   async formData(): Promise<FormData> {
@@ -41,18 +53,6 @@ class MockResponse implements Response {
   async json(): Promise<unknown> {
     return JSON.parse(this.#body)
   }
-
-  get body(): ReadableStream<Uint8Array> | null {
-    return null
-  }
-
-  get bodyUsed(): boolean {
-    return true
-  }
-
-  headers = new Headers()
-  redirected = false
-  type: ResponseType = 'basic'
 }
 
 const metaDir = resolve(process.cwd(), 'meta')
