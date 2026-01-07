@@ -11,7 +11,7 @@ import {
   extractTags,
   extractTitle
 } from './parsers'
-import type { DlsiteApiResponse, DlsiteSite } from './types'
+import type { DlsiteApiResponse, DlsiteLocale, DlsiteSite } from './types'
 import {
   buildProductUrl,
   cleanDlsiteTitle,
@@ -36,10 +36,17 @@ const createRequestInit = (): RequestInit => ({
   cache: 'no-store'
 })
 
-const parseHtmlDocument = (html: string): Document =>
-  parseHTML(html).document
+const parseHtmlDocument = (html: string): Document => parseHTML(html).document
 
-const fetchDocument = async (
+const getLocaleFromUrl = (url: string): string | null => {
+  try {
+    return new URL(url).searchParams.get('locale')
+  } catch {
+    return null
+  }
+}
+
+const requestDocument = async (
   url: string,
   fallbackSite: DlsiteSite
 ): Promise<DocumentResult | null> => {
@@ -72,8 +79,29 @@ const fetchSecondaryDocument = async (
   if (url === primary.url) {
     return primary.document
   }
-  const doc = await fetchDocument(url, primary.site)
+  const doc = await requestDocument(url, primary.site)
   return doc?.document ?? null
+}
+
+const fetchDocumentForSite = async (
+  code: string,
+  locale: DlsiteLocale,
+  site: DlsiteSite
+): Promise<DocumentResult | null> => {
+  let currentSite = site
+  for (let hop = 0; hop < 3; hop += 1) {
+    const requestUrl = buildProductUrl(code, locale, currentSite)
+    const result = await requestDocument(requestUrl, currentSite)
+    if (!result) {
+      return null
+    }
+    const finalLocale = getLocaleFromUrl(result.url)
+    if (result.site === currentSite && finalLocale === locale) {
+      return result
+    }
+    currentSite = result.site
+  }
+  return null
 }
 
 export const fetchDlsiteData = async (
@@ -84,8 +112,11 @@ export const fetchDlsiteData = async (
 
   let primaryDoc: DocumentResult | null = null
   for (const site of candidateSites) {
-    const urlCn = buildProductUrl(normalizedCode, DL_SUPPORTED_LOCALES.cn, site)
-    primaryDoc = await fetchDocument(urlCn, site)
+    primaryDoc = await fetchDocumentForSite(
+      normalizedCode,
+      DL_SUPPORTED_LOCALES.cn,
+      site
+    )
     if (primaryDoc) {
       break
     }
@@ -127,8 +158,7 @@ export const fetchDlsiteData = async (
 
   const result: DlsiteApiResponse = {
     rj_code: normalizedCode,
-    title_default:
-      cleanDlsiteTitle(extractTitle(docCn)) || normalizedCode,
+    title_default: cleanDlsiteTitle(extractTitle(docCn)) || normalizedCode,
     title_jp: cleanTitle(docJp),
     title_en: cleanTitle(docEn),
     release_date: releaseDate,
