@@ -1,4 +1,4 @@
-import { defineConfig } from '@rsbuild/core';
+import { defineConfig } from '@rsbuild/core'
 
 // Docs: https://rsbuild.rs/config/
-export default defineConfig({});
+export default defineConfig({})
