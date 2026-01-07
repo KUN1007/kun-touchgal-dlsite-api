@@ -1,4 +1,4 @@
-import { expect, test } from '@rstest/core'
+import { expect, test } from 'vitest'
 import { DL_SUPPORTED_LOCALES } from '../src/dlsite/constants'
 import {
   cleanDlsiteTitle,
@@ -8,8 +8,8 @@ import {
 
 test('cleanDlsiteTitle removes decorative brackets', () => {
   expect(
-    cleanDlsiteTitle('【2026限定】[预售] 美少女異聞 ～雪おんな～')
-  ).toBe('美少女異聞 ～雪おんな～')
+    cleanDlsiteTitle('【限定】JKフェラチオ！ [全年齢] だぶるアニメ！')
+  ).toBe('JKフェラチオ！ だぶるアニメ！')
 })
 
 test('getCandidateSites prioritises RJ then AI domains', () => {

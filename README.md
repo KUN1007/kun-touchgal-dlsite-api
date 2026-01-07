@@ -23,8 +23,12 @@ pnpm build
 node dist/index.js
 ```
 
+`pnpm build` bundles the API with [tsup](https://tsup.egoist.dev/), producing an ESM entry inside `dist/`.
+
 ## Testing
 
 ```bash
 pnpm test
 ```
+
+Unit tests run on [Vitest](https://vitest.dev/) and rely on the HTML snapshots in `meta/`, so they are hermetic and do not hit DLsite during CI.

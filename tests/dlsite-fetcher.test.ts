@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { expect, test } from '@rstest/core'
+import { expect, test } from 'vitest'
 import { fetchDlsiteData } from '../src/dlsite'
 
 class MockResponse implements Response {
@@ -26,25 +26,30 @@ class MockResponse implements Response {
     return this.#body
   }
 
-  // Unused Response APIs
   async arrayBuffer(): Promise<ArrayBuffer> {
     return new TextEncoder().encode(this.#body).buffer
   }
+
   async blob(): Promise<Blob> {
     throw new Error('Not implemented')
   }
+
   async formData(): Promise<FormData> {
     throw new Error('Not implemented')
   }
+
   async json(): Promise<unknown> {
     return JSON.parse(this.#body)
   }
+
   get body(): ReadableStream<Uint8Array> | null {
     return null
   }
+
   get bodyUsed(): boolean {
     return true
   }
+
   headers = new Headers()
   redirected = false
   type: ResponseType = 'basic'
@@ -78,8 +83,6 @@ const routeMap: Record<RouteKey, RouteMock> = {
   'aix/RJ01466244': { html: htmlCache.RJ01466244 },
   'pro/VJ01002419': { html: htmlCache.VJ01002419 }
 }
-
-const globalFetch = globalThis.fetch
 
 const mockFetch = async (input: RequestInfo | URL): Promise<Response> => {
   const target =
@@ -117,14 +120,16 @@ const runWithMockedFetch = async (fn: () => Promise<void>) => {
   try {
     await fn()
   } finally {
-    globalThis.fetch = original ?? globalFetch
+    globalThis.fetch = original
   }
 }
 
 test('parses RJ maniax pages correctly', async () => {
   await runWithMockedFetch(async () => {
     const data = await fetchDlsiteData('RJ01527759')
-    expect(data.title_default.startsWith('JKフェラチオ')).toBe(true)
+    expect(data.title_default).toBe(
+      'JKフェラチオ！だぶるアニメ！ 教育係の雛子ちゃんとクーデレ匂いフェチの新人ルリちゃん♪'
+    )
     expect(data.release_date).toBe('2026-01-02')
     expect(data.circle_name).toBe('Whisp')
     expect(data.circle_link).toContain('/maker_id/RG41088')
